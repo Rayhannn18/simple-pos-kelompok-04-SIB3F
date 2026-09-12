@@ -17,9 +17,16 @@
     }">
         <div class="grid grid-cols-3 gap-4">
             @foreach ($products as $product)
-                <div class="border rounded-md p-3 cursor-pointer"
+                <div class="border rounded-md p-3 cursor-pointer relative"
                     :class="selectedId === {{ $product->id }} ? 'ring-2 ring-blue-500' : ''"
                     @click="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})">
+
+                    @if ($product->stock < 10)
+                        <span class="absolute top-2 right-2 text-xs px-2 py-0.5 rounded bg-amber-100 text-amber-700">
+                            Stok Menipis
+                        </span>
+                    @endif
+
                     <p class="font-medium">{{ $product->name }}</p>
                     <p class="text-sm text-slate-500">Rp {{ number_format($product->price) }}</p>
                 </div>
