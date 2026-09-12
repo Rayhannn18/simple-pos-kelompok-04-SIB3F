@@ -45,5 +45,32 @@
     @endforeach
 </div>
 
+{{-- Tambahkan method removeFromCart di x-data --}}
+<div x-data="{
+    cart: [],
+    addToCart(id, name, price) {
+        this.cart.push({ id, name, price });
+    },
+    removeFromCart(index) {
+        this.cart.splice(index, 1);
+    },
+    subtotal() {
+        return this.cart.reduce((sum, item) => sum + item.price, 0);
+    }
+}">
+
+...
+
+{{-- Di area template x-for keranjang, ubah jadi seperti ini: --}}
+<div class="mt-4 border-t pt-3">
+    <template x-for="(item, index) in cart" :key="index">
+        <div class="flex justify-between items-center mb-1">
+            <p x-text="item.name + ' - Rp ' + item.price"></p>
+            <button @click="removeFromCart(index)" class="text-xs text-red-500 hover:underline">Hapus</button>
+        </div>
+    </template>
+    <p class="font-semibold mt-2">Subtotal: Rp <span x-text="subtotal()"></span></p>
+</div>
 >>>>>>> main
 @endsection
+
