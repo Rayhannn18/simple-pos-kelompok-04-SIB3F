@@ -3,7 +3,6 @@
 @section('title', 'Kasir')
 
 @section('content')
-<<<<<<< HEAD
     <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1>
     <div x-data="{
         cart: [],
@@ -38,7 +37,6 @@
             <p class="font-semibold mt-2">Subtotal: Rp <span x-text="subtotal()"></span></p>
         </div>
     </div>
-=======
 <h1 class="text-lg font-semibold mb-4">Transaksi Kasir</h1>
 
 <div class="grid grid-cols-3 gap-4">
@@ -66,8 +64,6 @@
     }
 }">
 
-...
-
 {{-- Di area template x-for keranjang, ubah jadi seperti ini: --}}
 <div class="mt-4 border-t pt-3">
     <template x-for="(item, index) in cart" :key="index">
@@ -78,6 +74,5 @@
     </template>
     <p class="font-semibold mt-2">Subtotal: Rp <span x-text="subtotal()"></span></p>
 </div>
->>>>>>> main
 @endsection
 
