@@ -40,4 +40,7 @@
             <p class="font-semibold mt-2">Subtotal: Rp <span x-text="subtotal()"></span></p>
         </div>
     </div>
+    <div class="mt-4">
+        {{ $products->links() }}
+    </div>
 @endsection
