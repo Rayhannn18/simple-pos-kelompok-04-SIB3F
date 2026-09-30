@@ -35,11 +35,17 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        //
+    $categories = Category::orderBy('name')->get();
+
+    return view('products.edit', compact('product', 'categories'));
     }
 
     public function update(StoreProductRequest $request, Product $product)
     {
-        //
+    $product->update($request->validated());
+
+    return redirect()
+        ->route('products.index')
+        ->with('success', 'Produk berhasil diperbarui.');
     }
 }
