@@ -11,6 +11,8 @@ use App\Models\TransactionDetail;
 
 class Product extends Model
 {
+    protected $fillable = ['category_id', 'name', 'price', 'stock'];
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -20,6 +22,7 @@ class Product extends Model
     {
         return $this->belongsToMany(Transaction::class, 'transaction_details');
     }
+
     public function details(): HasMany
     {
         return $this->hasMany(TransactionDetail::class);
