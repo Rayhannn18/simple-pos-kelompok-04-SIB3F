@@ -5,6 +5,17 @@
 @section('content')
 <h1 class="text-lg font-semibold mb-4">Daftar Produk</h1>
 
+@if (session('success'))
+    <div class="text-green-600 mb-4">
+        {{ session('success') }}
+    </div>
+@endif
+
+<a href="{{ route('products.create') }}"
+   class="inline-block mb-4 px-4 py-2 bg-blue-600 text-white rounded">
+    Tambah Produk
+</a>
+
 <table class="w-full text-left border-collapse">
     <thead>
         <tr class="border-b">
