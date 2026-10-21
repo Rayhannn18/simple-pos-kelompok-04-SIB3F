@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\View\View;
@@ -104,16 +105,15 @@ class ReportController extends Controller
 
         [$from, $to] = $this->resolveDateRange($request);
 
-        $query = $this->filteredQuery(
-            $from,
-            $to,
-            $request->input('category_id')
-        );
+        $categoryId = $request->input('category_id');
+        $query = $this->filteredQuery($from, $to, $categoryId);
+        $bestSellingProducts = $this->bestSellingProducts($from, $to, $categoryId);
 
         $pdf = Pdf::loadView('reports.pdf', [
             'totalPenjualan' => (clone $query)->sum('total'),
             'jumlahTransaksi' => (clone $query)->count(),
             'transactions' => $query->latest()->limit(50)->get(),
+            'bestSellingProducts' => $bestSellingProducts,
             'from' => $from->toDateString(),
             'to' => $to->toDateString(),
         ]);
@@ -163,6 +163,25 @@ class ReportController extends Controller
             'success',
             'Import menggunakan Laravel Excel berhasil diproses.'
         );
+    }
+
+    private function bestSellingProducts($from, $to, $categoryId = null)
+    {
+        return DB::table('transaction_details')
+            ->join('transactions', 'transactions.id', '=', 'transaction_details.transaction_id')
+            ->join('products', 'products.id', '=', 'transaction_details.product_id')
+            ->when($categoryId, fn ($query) => $query->where('products.category_id', $categoryId))
+            ->whereBetween('transactions.created_at', [$from, $to])
+            ->select(
+                'products.name',
+                DB::raw('SUM(transaction_details.qty) as total_qty'),
+                DB::raw('SUM(transaction_details.subtotal) as total_sales')
+            )
+            ->groupBy('products.id', 'products.name')
+            ->orderByDesc('total_qty')
+            ->orderByDesc('total_sales')
+            ->limit(10)
+            ->get();
     }
 
     private function resolveDateRange(Request $request): array
