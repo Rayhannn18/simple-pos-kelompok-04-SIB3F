@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Models\ImportError;
 use Illuminate\Support\Str;
+use App\Imports\ProductImport;
 
 class ReportController extends Controller
 {
@@ -121,15 +122,15 @@ class ReportController extends Controller
     }
 
     public function importForm(): View
-{
-    $batch = session('import_batch');
+    {
+        $batch = session('import_batch');
 
-    $importErrors = $batch
-        ? ImportError::where('batch', $batch)->orderBy('row_number')->get()
-        : collect();
+        $importErrors = $batch
+            ? ImportError::where('batch', $batch)->orderBy('row_number')->get()
+            : collect();
 
-    return view('reports.import', ['importErrors' => $importErrors]);
-}
+        return view('reports.import', ['importErrors' => $importErrors]);
+    }
 
     public function import(Request $request): RedirectResponse
     {
@@ -145,6 +146,23 @@ class ReportController extends Controller
         session()->put('import_batch', $batch);
 
         return back()->with('success', 'Import sedang diproses di background.');
+    }
+
+    public function importExcel(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'csv' => ['required', 'file', 'mimes:csv,txt'],
+        ]);
+
+        Excel::import(
+            new ProductImport(),
+            $request->file('csv')
+        );
+
+        return back()->with(
+            'success',
+            'Import menggunakan Laravel Excel berhasil diproses.'
+        );
     }
 
     private function resolveDateRange(Request $request): array

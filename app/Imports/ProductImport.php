@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Imports;
+
+use App\Models\Product;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithValidation;
+
+class ProductImport implements
+    ToModel,
+    WithHeadingRow,
+    WithChunkReading,
+    WithValidation
+{
+    public function model(array $row)
+    {
+        return Product::updateOrCreate(
+            [
+                'name' => $row['name'],
+                'category_id' => $row['category_id'],
+            ],
+            [
+                'price' => $row['price'],
+            ]
+        );
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => ['required', 'string'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'price' => ['required', 'numeric', 'min:0'],
+        ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 500;
+    }
+}
