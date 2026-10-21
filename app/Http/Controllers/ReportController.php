@@ -15,6 +15,8 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Models\ImportError;
+use Illuminate\Support\Str;
 
 class ReportController extends Controller
 {
@@ -119,9 +121,15 @@ class ReportController extends Controller
     }
 
     public function importForm(): View
-    {
-        return view('reports.import');
-    }
+{
+    $batch = session('import_batch');
+
+    $importErrors = $batch
+        ? ImportError::where('batch', $batch)->orderBy('row_number')->get()
+        : collect();
+
+    return view('reports.import', ['importErrors' => $importErrors]);
+}
 
     public function import(Request $request): RedirectResponse
     {
@@ -129,14 +137,14 @@ class ReportController extends Controller
             'csv' => ['required', 'file', 'mimes:csv,txt'],
         ]);
 
+        $batch = (string) Str::uuid();
         $path = $request->file('csv')->store('imports');
 
-        ProcessProductImport::dispatch($path);
+        ProcessProductImport::dispatch($path, $batch);
 
-        return back()->with(
-            'success',
-            'Import sedang diproses di background.'
-        );
+        session()->put('import_batch', $batch);
+
+        return back()->with('success', 'Import sedang diproses di background.');
     }
 
     private function resolveDateRange(Request $request): array
