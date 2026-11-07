@@ -55,3 +55,17 @@ Karena itu, total sebaiknya tidak langsung dipercaya dari form. Server perlu men
 - Kasir dapat membuka halaman `/pos`.
 - Kasir dapat membuka halaman `/transactions`.
 - Kasir tidak dapat membuka halaman `/products` dan mendapatkan respons **403 Forbidden**.
+
+## Jobsheet 9 Tugas 5 - Identifikasi satu proses lain di Simple POS yang menurutmu layak dipindah ke queued job, dan jelaskan alasannya di README proyek.
+
+## Analisis Queued Job Tambahan
+
+### Proses yang Dipilih
+**Pengiriman Struk Belanja Digital (E-Receipt) dan Notifikasi Penjualan via Email**
+
+### Alasan Pemilihan:
+1. **Meningkatkan Kecepatan Antrean Kasir:**
+   Komunikasi dengan server SMTP eksternal membutuhkan waktu 1-3 detik per permintaan. Memindahkan pengiriman email ke background job membuat respon HTTP di halaman kasir instan, sehingga kasir dapat langsung melayani transaksi berikutnya tanpa jeda loading.
+
+2. **Ketahanan terhadap Gangguan Jaringan (Fault Tolerance):**
+   Koneksi ke penyedia email pihak ketiga berisiko mengalami timeout atau pembatasan kuota (rate limit). Melalui Queued Job dengan konfigurasi `$tries = 3` dan backoff bertingkat, email yang gagal terkirim akan dicoba ulang secara otomatis tanpa memicu error 500 di layar kasir maupun membatalkan transaksi yang sudah tercatat di database.
