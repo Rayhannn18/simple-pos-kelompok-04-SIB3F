@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\QuickCategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -61,5 +62,12 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/import/excel', [ReportController::class, 'importExcel'])
             ->name('import.excel.store');
+
+        // Route untuk Langkah 11 (AJAX Quick Categories)
+        Route::get('/quick-categories', [QuickCategoryController::class, 'index'])
+            ->name('quick-categories.index');
+
+        Route::post('/quick-categories', [QuickCategoryController::class, 'store'])
+            ->name('quick-categories.store');
     });
 });
