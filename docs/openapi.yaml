@@ -158,3 +158,12 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+
+# Perbandingan Pengalaman Pengujian API: Postman/Insomnia vs cURL
+# Menguji ketiga endpoint (/api/login, /api/products, dan /api/transactions) menggunakan GUI klien HTTP seperti Postman/Insomnia jauh lebih praktis dan terstruktur dibandingkan menggunakan perintah cURL di terminal. Pada Postman/Insomnia, pengelolaan header seperti Accept: application/json, Idempotency-Key, serta penyisipan Bearer Token dapat disimpan di dalam tab khusus atau environment variable tanpa harus mengetik ulang flag -H yang panjang dan rawan salah ketik (typo) maupun masalah tanda kutip JSON seperti pada cURL. Selain itu, Postman/Insomnia menampilkan response JSON yang langsung diformat (pretty-printed) dengan pewarnaan sintaks serta memisahkan tab informasi status kode HTTP dan response header (seperti saat mengecek header Idempotent-Replayed: true), sedangkan cURL tetap lebih unggul dan ringan ketika dibutuhkan untuk pengujian cepat langsung dari baris perintah atau otomatisasi skrip di terminal (seperti simulasi loop rate-limiting 429).
+
+openapi: 3.0.0
+info:
+  title: Simple POS API
+  version: 1.0.0
+# ... (biarkan sisa kode openapi.yaml di bawahnya tetap seperti semula)
