@@ -3,7 +3,7 @@ info:
   title: Simple POS API
   version: 1.0.0
 paths:
-  /api/login:
+  /api/v1/login:
     post:
       summary: Login dan dapatkan token
       requestBody:
@@ -32,7 +32,7 @@ paths:
                 properties:
                   message: { type: string }
 
-  /api/products:
+  /api/v1/products:
     get:
       summary: Ambil daftar produk
       security:
@@ -106,7 +106,7 @@ paths:
         '422':
           description: Parameter query string tidak valid
 
-  /api/transactions:
+  /api/v1/transactions:
     post:
       summary: Buat transaksi baru
       security:
