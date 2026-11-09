@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Resources;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryResource;
-use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryController extends Controller
+class CategoryResource extends JsonResource
 {
-    public function index(Request $request)
+    public function toArray(Request $request): array
     {
-        $categories = Category::withCount('products')->orderBy('name')->get();
-
-        return CategoryResource::collection($categories);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'products_count' => $this->whenCounted('products'),
+        ];
     }
 }
