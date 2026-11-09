@@ -3,8 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 
 class IdempotencyKey extends Model
 {
-    protected $fillable = ['user_id', 'key', 'request_hash', 'response_status', 'response_body'];
+    use Prunable;
+
+    protected $fillable = [
+        'user_id',
+        'key',
+        'request_hash',
+        'response_status',
+        'response_body',
+    ];
+
+    public function prunable()
+    {
+        return static::where('created_at', '<', now()->subHours(24));
+    }
 }
