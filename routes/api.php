@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -14,4 +15,5 @@ Route::middleware(['auth:sanctum', 'throttle:api'])->group(function () {
         ->middleware(['abilities:transactions:create', 'idempotent']);
     Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])
         ->middleware('abilities:transactions:read');
+    Route::get('/categories', [CategoryController::class, 'index'])->middleware('abilities:products:read');
 });
